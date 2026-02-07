@@ -5,45 +5,42 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # 22.04 değil, 20.04 daha stabil
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            git \
-            zip \
-            unzip \
-            openjdk-17-jdk \
-            python3-pip \
-            cython3
-      
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade pip
-          pip install buildozer
-      
-      - name: Accept Android licenses
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          echo "y" | /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-      
-      - name: Build APK
-        run: |
-          buildozer android debug
-      
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: standoff-apk
-          path: bin/*.apk
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'  # 3.10 değil, 3.8 daha uyumlu
+        
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          git \
+          zip \
+          unzip \
+          openjdk-8-jdk \  # 17 değil, 8 daha uyumlu
+          python3-pip \
+          python3-dev \
+          zlib1g-dev
+        
+    - name: Install Python packages
+      run: |
+        pip3 install --upgrade pip wheel setuptools
+        pip3 install buildozer cython==0.29.36
+        
+    - name: Build APK
+      run: |
+        buildozer android debug
+        ls -la bin/
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: standoff-apk
+        path: bin/*.apk
