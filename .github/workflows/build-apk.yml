@@ -1,38 +1,19 @@
-name: Build APK
+name: Build Standoff APK
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - name: Build APK with Buildozer
+        uses: rahulbordoloi/buildozer-action@v1
         with:
-          python-version: '3.9'
-          
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            git \
-            zip \
-            unzip \
-            openjdk-11-jdk
-          
-      - name: Install Buildozer
-        run: pip install buildozer
-          
-      - name: Build APK
-        run: buildozer android debug
-          
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+          workdir: '.'
+          buildozer_version: 'stable'
+      - uses: actions/upload-artifact@v3
         with:
-          name: standoff-trainer
+          name: standoff-apk
           path: bin/*.apk
