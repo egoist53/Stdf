@@ -4,7 +4,7 @@ package.name = standofftrainer
 package.domain = org.test
 source.dir = .
 version = 1.0
-requirements = python3,kivy==2.2.0,cython
+requirements = python3,kivy==2.2.0
 android.permissions = 
 orientation = portrait
 main.py = main.py
